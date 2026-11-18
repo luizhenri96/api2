@@ -22,7 +22,7 @@ app.post('/show', async (req, res) => {
         nome: req.body.nome,
         cpf: req.body.cpf,
         telefone: req.body.telefone,
-        nascimento: req.body.nascimento
+        data: req.body.data
     })
     res.redirect('/show')
 })
@@ -44,8 +44,8 @@ app.post('/edit/:id', async(req, res) =>{
             $set:{
                 nome: req.body.nome,
                 cpf: req.body.cpf,
-                telefone: req.body.telefone,
-                nascimento: req.body.nascimento
+                email: req.body.email,
+                telefone: req.body.telefone
             }
         }
     )
