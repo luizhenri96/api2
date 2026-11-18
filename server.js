@@ -21,8 +21,8 @@ app.post('/show', async (req, res) => {
     await collection.insertOne({
         nome: req.body.nome,
         cpf: req.body.cpf,
-        email: req.body.email,
-        telefone: req.body.telefone
+        telefone: req.body.telefone,
+        nascimento: req.body.nascimento
     })
     res.redirect('/show')
 })
@@ -44,8 +44,8 @@ app.post('/edit/:id', async(req, res) =>{
             $set:{
                 nome: req.body.nome,
                 cpf: req.body.cpf,
-                email: req.body.email,
-                telefone: req.body.telefone
+                telefone: req.body.telefone,
+                nascimento: req.body.nascimento
             }
         }
     )
@@ -59,7 +59,7 @@ app.get('/delete/:id', async (req, res) => {
 
 async function iniciar(){
     await client.connect()
-    const db = client.db('aluno')
+    const db = client.db('confiaMais')
     collection = db.collection('crud')
     console.log("conectou com o nosso banco")
 
