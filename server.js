@@ -1,4 +1,5 @@
-const express = require ('express')
+
+const express = require('express')
 const app = express()
 const {MongoClient, ObjectId} = require('mongodb')
 const dotenv = require('dotenv')
@@ -13,61 +14,83 @@ let collection
 app.set('view engine', 'ejs')
 app.use(express.urlencoded({extended: true}))
 
-app.get('/index' , (req, res) => {
+// Página principal
+app.get('/', (req, res) => {
+    res.redirect('/index')
+})
+
+// Página inicial
+app.get('/index', (req, res) => {
     res.render('index2.ejs')
 })
 
+// Cadastrar
 app.post('/show', async (req, res) => {
     await collection.insertOne({
         nome: req.body.nome,
-        cpf: req.body.cpf,
+        senha: req.body.senha,
         telefone: req.body.telefone,
         data: req.body.data
     })
+
     res.redirect('/show')
 })
 
-app.get('/show' , async (req, res) => {
+// Mostrar dados
+app.get('/show', async (req, res) => {
     const crud = await collection.find().toArray()
-    res.render('show2.ejs' , {crud})
+    res.render('show2.ejs', {crud})
 })
 
-app.get('/edit/:id', async (req, res) =>{
-    const crud = await collection.find({_id:new ObjectId(req.params.id)}).toArray()
+// Visualizar edição
+app.get('/edit2/:id', async (req, res) => {
+    const crud = await collection.findOne({
+        _id: new ObjectId(req.params.id)
+    })
+
     res.render('edit2.ejs', {crud})
 })
 
-app.post('/edit/:id', async(req, res) =>{
+// Atualizar edição
+app.post('/edit2/:id', async (req, res) => {
     await collection.updateOne(
         {_id: new ObjectId(req.params.id)},
         {
-            $set:{
+            $set: {
                 nome: req.body.nome,
-                cpf: req.body.cpf,
-                email: req.body.email,
-                telefone: req.body.telefone
+                senha: req.body.senha,
+                telefone: req.body.telefone,
+                data: req.body.data
             }
         }
     )
+
     res.redirect('/show')
 })
 
+// Excluir
 app.get('/delete/:id', async (req, res) => {
-    await collection.deleteOne({_id: new ObjectId(req.params.id)})
+    await collection.deleteOne({
+        _id: new ObjectId(req.params.id)
+    })
+
     res.redirect('/show')
 })
 
-async function iniciar(){
+// Iniciar banco de dados e servidor
+async function iniciar() {
     await client.connect()
+
     const db = client.db('confiaMais')
     collection = db.collection('crud')
-    console.log("conectou com o nosso banco")
 
-    app.listen(3001, function(){
-        console.log("o nosso servidor está rodando na porta 3001")
+    console.log("Conectou com o nosso banco")
+
+    app.listen(3001, function() {
+        console.log("O nosso servidor está rodando na porta 3001")
     })
 }
 
-iniciar().catch(function(erro){
+iniciar().catch(function(erro) {
     console.error("Erro ao iniciar", erro)
 })
